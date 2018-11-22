@@ -44,6 +44,7 @@ class DirectHashTable:
         else:
             return False
 
+
     def __str__(self):
         elements_as_str = ''
         for element in self.table:

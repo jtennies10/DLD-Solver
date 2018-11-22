@@ -1,6 +1,13 @@
 from Truck import *
 from Delivery import *
 from DirectHashTable import *
+from datetime import *
+
+
+#instantiate the hours and minutes for the beginning of the day
+hour_of_day = 8
+minutes_of_hour = 0
+
 
 #program control here
 
