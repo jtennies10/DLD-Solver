@@ -18,4 +18,16 @@ class Delivery:
     def update_delivery_status(self, new_status):
         self.delivery_status = new_status
 
-    #TODO: add __str__
+    def __str__(self):
+        delivery_as_str = ''
+        delivery_as_str += (str(self.package_id) + ' ')
+        delivery_as_str += (self.city + ', ')
+        delivery_as_str += (self.state + ' ')
+        delivery_as_str += (self.zip + ' ')
+        delivery_as_str += ('Deadline:' 
+        + self.delivery_deadline + ' ')
+        delivery_as_str += (str(self.weight_in_kilograms) + 'kg ')
+        delivery_as_str += ('Notes:' + self.special_notes + ' ')
+        delivery_as_str += ('Status:' + self.delivery_status)
+
+        return delivery_as_str

@@ -43,3 +43,10 @@ class DirectHashTable:
             return True
         else:
             return False
+
+    def __str__(self):
+        elements_as_str = ''
+        for element in self.table:
+            elements_as_str += (str(self.table[element]) + '\n')
+        
+        return elements_as_str

@@ -16,4 +16,9 @@ class Truck:
     def remove_package(self, package):
         self.packages_on_board.remove(package)
 
-    #TODO: add __str__
+    def __str__(self):
+        packages_as_str = ''
+        for package in self.packages_on_board:
+            packages_as_str += (str(package) + '\n')
+        
+        return packages_as_str

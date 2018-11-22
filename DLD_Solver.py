@@ -1,5 +1,6 @@
 from Truck import *
 from Delivery import *
+from DirectHashTable import *
 
 #program control here
 
@@ -10,11 +11,13 @@ t2 = Truck()
 d1 = Delivery(1, '17 Foreman st', 
 'Eldred', 'PA', '16731', '10:00 am', 30, '', 'waiting')
 
-print(t1.packages_on_board)
+print(d1)
+
+print(t1)
 
 t2.add_package(d1)
 
-print('t2: ' + t2.packages_on_board)
+print(t2)
 
 
 
