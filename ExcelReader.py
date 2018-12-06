@@ -1,11 +1,11 @@
 """
-Reads in the data from the excel files associated with the project.
+Reads in the data from the excel files associated with the project using the xlrd module
 Excel interaction code adapted from 
 https://www.geeksforgeeks.org/reading-excel-file-using-python/
 """
 
 from DirectHashTable import *
-from Delivery import *
+from Package import *
 import xlrd
 
 def read_in_packages():
@@ -22,13 +22,13 @@ def read_in_packages():
         city = sheet.cell_value(i, 2)
         state = sheet.cell_value(i, 3)
         zipcode = str(sheet.cell_value(i, 4))
-        delivery_deadline = str(sheet.cell_value(i, 5))
+        package_deadline = str(sheet.cell_value(i, 5))
        	weight_in_kg = sheet.cell_value(i, 6)
         special_notes = sheet.cell_value(i, 7)
-        delivery = Delivery(package_id, address, city, state, zipcode,
-                            delivery_deadline, weight_in_kg, 
+        current_package = Package(package_id, address, city, state, zipcode,
+                            package_deadline, weight_in_kg, 
                             special_notes, 'waiting')
-        temp_packages_table.add_element(package_id, delivery)
+        temp_packages_table.add_element(package_id, current_package)
 
     return temp_packages_table
 

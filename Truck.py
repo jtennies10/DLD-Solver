@@ -5,6 +5,7 @@
 class Truck:
     PACKAGE_CAPACITY = 16
     TRUCK_SPEED = 18
+    miles_driven = 0
 
     def __init__(self):
         self.packages_on_board = list()
