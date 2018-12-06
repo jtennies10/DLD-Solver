@@ -7,7 +7,9 @@ import ExcelReader
 distance_matrix = ExcelReader.read_in_distances()
 
 #read in package data and store in table  
-packages_table = ExcelReader.read_in_packages()   
+packages_table = ExcelReader.read_in_packages(distance_matrix)   
+
+print(packages_table)
 
 #instantiate the hours and minutes for the beginning of the day
 hour_of_day = 8
