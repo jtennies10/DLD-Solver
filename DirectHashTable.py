@@ -53,7 +53,7 @@ class DirectHashTable:
         return self
 
     def __next__(self):
-        if(self.current < len(self.table)):
+        if(self.current <= len(self.table)):
             self.current += 1
             return self.table[self.current - 1]
         raise StopIteration

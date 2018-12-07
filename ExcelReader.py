@@ -62,7 +62,7 @@ def read_in_distances():
     return distance_matrix
 
 """
-Excel stores times as fractions of a 24 day
+Excel stores times as fractions of a 24 hour day
 The below method converts the passed in fraction into 
 a tuple consisting of (hours, minutes) and returns 
 the tuple
