@@ -10,6 +10,7 @@ class DirectHashTable:
     """
     def __init__(self):
         self.table = {}
+        self.current = 1
 
     """
     Adds an element to the table
@@ -44,6 +45,18 @@ class DirectHashTable:
         else:
             return False
 
+    def size(self):
+        return len(self.table)
+
+    def __iter__(self):
+        self.current = 1
+        return self
+
+    def __next__(self):
+        if(self.current < len(self.table)):
+            self.current += 1
+            return self.table[self.current - 1]
+        raise StopIteration
 
     def __str__(self):
         elements_as_str = ''

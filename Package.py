@@ -16,6 +16,13 @@ class Package:
         self.package_status = package_status
         self.distance_list_id = distance_list_id
     
+    def get_package_id(self):
+        return self.package_id
+
+    def get_distance_list_id(self):
+        return self.distance_list_id
+
+
     def set_distance_list_id(self, distance_id):
         self.distance_list_id = distance_id
 

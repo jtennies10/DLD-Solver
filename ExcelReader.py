@@ -19,6 +19,7 @@ def read_in_packages(distance_matrix):
     for i in range(8, sheet.nrows-1):
         package_id = sheet.cell_value(i, 0)
         address = sheet.cell_value(i, 1)
+        address = address.replace('South', 'S')
         city = sheet.cell_value(i, 2)
         state = sheet.cell_value(i, 3)
         zipcode = str(sheet.cell_value(i, 4))
@@ -34,7 +35,6 @@ def read_in_packages(distance_matrix):
         #parse through the distance matrix and find the distance list with
         #an address that matches the address of the current package
         for distance_list in distance_matrix:
-            print(distance_list[1])
             if distance_list[1].find(address) >= 0:
                 distance_list_id = distance_matrix.index(distance_list)
                 break
@@ -55,7 +55,9 @@ def read_in_distances():
     sheet = wb.sheet_by_index(0)
 
     for i in range(7, sheet.nrows-1):
-        distance_matrix.append(sheet.row_values(i))
+        currentRow = sheet.row_values(i)
+        currentRow[1] = currentRow[1].replace('South', 'S')
+        distance_matrix.append(currentRow)
 
     return distance_matrix
 
