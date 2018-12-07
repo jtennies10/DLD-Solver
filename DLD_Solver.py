@@ -18,7 +18,7 @@ hour_of_day = 8
 minutes_of_hour = 0
 
 table_size = packages_table.size()
-minimum_distance = float(sys.maxsize)
+minimum_distance = float()
 optimal_route = list()
 optimal_route.append(0) #the first object is always the hub
 
@@ -31,26 +31,30 @@ while inc < table_size:
     nextMinMovement = float(sys.maxsize)
     nextMovementId = -1
     for package in packages_table:
-        print(package)
-        print(str(last_distance_id))
+        # print(package)
+        # print(str(last_distance_id))
         if package.get_distance_list_id() == -1:
             continue
+
+        currentMovement = int()
         if package.get_distance_list_id() >= last_distance_id:
             currentMovement = float(distance_matrix[package.get_distance_list_id()][last_distance_id+2])
-            if currentMovement < nextMinMovement and optimal_route.count(package.get_package_id()) < 1:
-                print('true')
-                nextMinMovement = currentMovement
-                nextMovementId = package.get_package_id()
-                print(str(nextMovementId))
+
         else:
             currentMovement = float(distance_matrix[last_distance_id][package.get_distance_list_id()+2])
-            if  currentMovement < nextMinMovement and optimal_route.count(package.get_package_id()) < 1:
-                nextMinMovement = currentMovement
-                nextMovementId = package.get_package_id()
+        
+        print(str(currentMovement))
+        if  currentMovement < nextMinMovement and optimal_route.count(package.get_package_id()) < 1:
+            print('true')
+            nextMinMovement = currentMovement
+            nextMovementId = package.get_package_id()
 
-    last_distance_id = nextMovementId
+    
+    last_distance_id = packages_table.search(nextMovementId).get_distance_list_id()
     optimal_route.append(nextMovementId)
     minimum_distance += nextMinMovement
+    print('\n\n\n' + str(nextMinMovement))
+    print(str(minimum_distance) + '\n\n\n')
 
 print(optimal_route)
 print(str(minimum_distance))

@@ -5,7 +5,7 @@ class Package:
     def __init__(self, package_id, address, city, state, zip,
     package_deadline, weight_in_kilograms, 
     special_notes, package_status, distance_list_id):
-        self.package_id = package_id
+        self.package_id = int(package_id)
         self.address = address
         self.city = city
         self.state = state
