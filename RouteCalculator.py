@@ -9,15 +9,30 @@ def calculate_near_optimal_route(trucks_in_optimal_route, table_size, distance_m
 
     minimum_distance = float()
 
-    #create a list that originally holds all the package ids of every
-    #package in packages_table
-    remaining_package_ids = list()
-    for package in packages_table:
-        remaining_package_ids.append(package.get_package_id())
-
-    print(remaining_package_ids)
-
+    #create a list that holds all package ids, broken into lists representing 
+    #special instructions and sensitivities, reference variables are then declared
+    #to refer to each list in remaining_package_ids
+    remaining_package_ids = [[],[],[],[],[],[]]
+    TIME_SENSITIVE_INDEX = 0
+    GROUPED_TOGETHER_INDEX = 1
+    TRUCK_TWO_ONLY = 2
+    DELAYED = 3
+    WRONG_ADDRESS = 4
+    OTHER = 5
     
+    
+    for package in packages_table:
+        current_time = package.time
+        current_special_notes = package.special_notes
+        #assign package to correct nested list based on conditions
+
+        #  remaining_package_ids.append(package.get_package_id())
+
+    #print(remaining_package_ids)
+
+
+
+
     for i in range(0,len(trucks_in_optimal_route)):
         inc = 0
         last_distance_id = 0
