@@ -11,7 +11,7 @@ import xlrd
 def read_in_packages(distance_matrix):
     temp_packages_table = DirectHashTable()
 
-    loc = "WGUPS Package File.xlsx"
+    loc = "Test Package File.xlsx"
 
     wb = xlrd.open_workbook(loc) 
     sheet = wb.sheet_by_index(0)
