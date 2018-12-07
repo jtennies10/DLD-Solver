@@ -11,12 +11,18 @@ class Truck:
 
     def __init__(self):
         self.package_ids_on_board = list()
+
+    def get_package_ids_on_board(self):
+        return self.package_ids_on_board
     
-    def add_package(self, package_id):
+    def add_package_id(self, package_id):
         if(len(self.package_ids_on_board) < 16):
             self.package_ids_on_board.append(package_id)
+            return True
 
-    def remove_package(self, package):
+        return False
+
+    def remove_package_id(self, package):
         self.package_ids_on_board.remove(package)
 
     def __str__(self):

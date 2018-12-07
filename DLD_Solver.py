@@ -26,7 +26,8 @@ for i in range(0,Truck.NUM_TRUCKS):
 
 totalMiles = RouteCalculator.calculate_near_optimal_route(
     trucks_in_optimal_route, table_size, distance_matrix, packages_table)
-print(trucks_in_optimal_route)
+for truck in trucks_in_optimal_route:
+    print(str(truck) + '\n')
 print(str(totalMiles))
 
 
