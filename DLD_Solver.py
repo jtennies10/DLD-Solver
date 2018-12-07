@@ -11,6 +11,7 @@ distance_matrix = ExcelReader.read_in_distances()
 packages_table = ExcelReader.read_in_packages(distance_matrix)   
 
 print(packages_table)
+print(len(distance_matrix))
 
 #instantiate the hours and minutes for the beginning of the day
 hour_of_day = 8

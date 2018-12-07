@@ -16,7 +16,7 @@ def read_in_packages(distance_matrix):
     wb = xlrd.open_workbook(loc) 
     sheet = wb.sheet_by_index(0)
     
-    for i in range(8, sheet.nrows-1):
+    for i in range(8, sheet.nrows):
         package_id = sheet.cell_value(i, 0)
         address = sheet.cell_value(i, 1)
         address = address.replace('South', 'S')
@@ -54,7 +54,7 @@ def read_in_distances():
     wb = xlrd.open_workbook(loc)
     sheet = wb.sheet_by_index(0)
 
-    for i in range(7, sheet.nrows-1):
+    for i in range(7, sheet.nrows):
         currentRow = sheet.row_values(i)
         currentRow[1] = currentRow[1].replace('South', 'S')
         distance_matrix.append(currentRow)
