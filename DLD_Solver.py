@@ -18,6 +18,7 @@ packages_table = ExcelReader.read_in_packages(distance_matrix)
 hour_of_day = 8
 minutes_of_hour = 0
 
+
 table_size = packages_table.size()
 
 trucks_in_optimal_route = list()

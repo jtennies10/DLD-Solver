@@ -10,8 +10,10 @@ WRONG_ADDRESS_WEIGHT = 1
 
 #adds grouped weight if not already added
 def add_grouped_package_weight(current_package_weight):
-    if current_package_weight / TIME_SENSITIVE_WEIGHT == 1:
+    
+    if int(current_package_weight / TIME_SENSITIVE_WEIGHT) == 1:
         current_package_weight %= 5
+        
     if current_package_weight / GROUPED_TOGETHER_WEIGHT == 1: #package weight was already added
         return 0
     else: #grouped weight has not yet been added
@@ -39,16 +41,18 @@ def calculate_near_optimal_route(trucks_in_optimal_route, table_size, distance_m
         current_deadline = package.package_deadline
         current_special_notes = package.special_notes
         current_package_id = package.get_package_id()
+        #print(str(current_package_id)) 
         #print(current_special_notes)
         package_weight = 0
         #assign package to correct nested list based on conditions
         if 'EOD' not in current_deadline:
+            #print('time-sens')
             #add time_sensitive_weight
             package_weight += TIME_SENSITIVE_WEIGHT
 
         #check for a special note, there can only be one    
         if current_special_notes.find(GROUPED_TOGETHER_STR) >= 0:
-            print('group')
+            
             #add to grouped_together, ISSUE OF NOT ADDING WEIGHT TO ALL
             package_weight += add_grouped_package_weight(package_weight)
             grouped_packages = current_special_notes[
@@ -56,12 +60,17 @@ def calculate_near_optimal_route(trucks_in_optimal_route, table_size, distance_m
             
             grouped_packages = grouped_packages.split(', ') 
             for i in grouped_packages: #call add_grouped_packaged_weight on each item
-                remaining_package_ids[int(i)-1][1] = add_grouped_package_weight(
+                #print(i)
+                #print(str(remaining_package_ids[int(i)-1][1]))
+                #print('looping')
+                remaining_package_ids[int(i)-1][1] += add_grouped_package_weight(
                     remaining_package_ids[int(i)-1][1])
+
+            #print(remaining_package_ids)
 
 
         elif 'truck 2' in current_special_notes:
-            print('truck two')
+            #print('truck two')
             #add to truck_two
             package_weight += TRUCK_TWO_ONLY_WEIGHT
         elif 'Delayed' in current_special_notes:
@@ -72,8 +81,8 @@ def calculate_near_optimal_route(trucks_in_optimal_route, table_size, distance_m
             package_weight += WRONG_ADDRESS_WEIGHT
 
         #add tuple to list 
-        print(str(current_package_id))  
-        remaining_package_ids[current_package_id-1][1] = package_weight
+         
+        remaining_package_ids[current_package_id-1][1] += package_weight
 
 
 
