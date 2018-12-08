@@ -2,6 +2,21 @@ import sys
 #import truck
 from Truck import *
 
+TIME_SENSITIVE_WEIGHT = 5
+GROUPED_TOGETHER_WEIGHT = 4
+TRUCK_TWO_ONLY_WEIGHT = 3
+DELAYED_WEIGHT = 2
+WRONG_ADDRESS_WEIGHT = 1
+
+#adds grouped weight if not already added
+def add_grouped_package_weight(current_package_weight):
+    if current_package_weight / TIME_SENSITIVE_WEIGHT == 1:
+        current_package_weight %= 5
+    if current_package_weight / GROUPED_TOGETHER_WEIGHT == 1: #package weight was already added
+        return 0
+    else: #grouped weight has not yet been added
+        return GROUPED_TOGETHER_WEIGHT
+
 def calculate_near_optimal_route(trucks_in_optimal_route, table_size, distance_matrix, packages_table):
     #using a greedy algorithm
     #that gets an approximate solution in O(n^3)
@@ -9,26 +24,61 @@ def calculate_near_optimal_route(trucks_in_optimal_route, table_size, distance_m
 
     minimum_distance = float()
 
-    #create a list that holds all package ids, broken into lists representing 
-    #special instructions and sensitivities, reference variables are then declared
-    #to refer to each list in remaining_package_ids
-    remaining_package_ids = [[],[],[],[],[],[]]
-    TIME_SENSITIVE_INDEX = 0
-    GROUPED_TOGETHER_INDEX = 1
-    TRUCK_TWO_ONLY = 2
-    DELAYED = 3
-    WRONG_ADDRESS = 4
-    OTHER = 5
+    #create a list of tuples holding a package id and its given 
+    #weight based on the factors below
+    remaining_package_ids = list()
+    for i in range(1, len(packages_table.table)+1):
+        remaining_package_ids.append([i, 0])
+
+    
+
+    GROUPED_TOGETHER_STR = 'Must be delivered with '
     
     
     for package in packages_table:
-        current_time = package.time
+        current_deadline = package.package_deadline
         current_special_notes = package.special_notes
+        current_package_id = package.get_package_id()
+        #print(current_special_notes)
+        package_weight = 0
         #assign package to correct nested list based on conditions
+        if 'EOD' not in current_deadline:
+            #add time_sensitive_weight
+            package_weight += TIME_SENSITIVE_WEIGHT
 
-        #  remaining_package_ids.append(package.get_package_id())
+        #check for a special note, there can only be one    
+        if current_special_notes.find(GROUPED_TOGETHER_STR) >= 0:
+            print('group')
+            #add to grouped_together, ISSUE OF NOT ADDING WEIGHT TO ALL
+            package_weight += add_grouped_package_weight(package_weight)
+            grouped_packages = current_special_notes[
+                len(GROUPED_TOGETHER_STR):len(current_special_notes)]
+            
+            grouped_packages = grouped_packages.split(', ') 
+            for i in grouped_packages: #call add_grouped_packaged_weight on each item
+                remaining_package_ids[int(i)-1][1] = add_grouped_package_weight(
+                    remaining_package_ids[int(i)-1][1])
 
-    #print(remaining_package_ids)
+
+        elif 'truck 2' in current_special_notes:
+            print('truck two')
+            #add to truck_two
+            package_weight += TRUCK_TWO_ONLY_WEIGHT
+        elif 'Delayed' in current_special_notes:
+            #add to delayed
+            package_weight += DELAYED_WEIGHT
+        elif 'Wrong address listed' in current_special_notes:
+            #add to wrong_address
+            package_weight += WRONG_ADDRESS_WEIGHT
+
+        #add tuple to list 
+        print(str(current_package_id))  
+        remaining_package_ids[current_package_id-1][1] = package_weight
+
+
+
+
+    print(remaining_package_ids)
 
 
 
@@ -41,8 +91,8 @@ def calculate_near_optimal_route(trucks_in_optimal_route, table_size, distance_m
             inc += 1
             nextMinMovement = float(sys.maxsize)
             nextMovementId = -1
-            for package_id in remaining_package_ids:
-                # print(package)
+            for package_id in remaining_package_ids: #fix to iterate on each item in a list
+                #print(package_id)
                 # print(str(last_distance_id))
 
                 currentMovement = int()
@@ -82,3 +132,4 @@ def calculate_near_optimal_route(trucks_in_optimal_route, table_size, distance_m
         minimum_distance += distance_matrix[last_distance_id][2]
 
     return round(minimum_distance, 1)
+

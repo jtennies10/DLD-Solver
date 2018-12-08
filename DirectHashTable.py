@@ -48,6 +48,9 @@ class DirectHashTable:
     def size(self):
         return len(self.table)
 
+    def copy(self):
+        return self.table.copy()
+
     def __iter__(self):
         self.current = 1
         return self
