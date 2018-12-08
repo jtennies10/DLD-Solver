@@ -19,6 +19,9 @@ def add_grouped_package_weight(current_package_weight):
     else: #grouped weight has not yet been added
         return GROUPED_TOGETHER_WEIGHT
 
+def sort_by_weight(id):
+    return id[1]
+
 def calculate_near_optimal_route(trucks_in_optimal_route, table_size, distance_matrix, packages_table):
     #using a greedy algorithm
     #that gets an approximate solution in O(n^3)
@@ -85,7 +88,7 @@ def calculate_near_optimal_route(trucks_in_optimal_route, table_size, distance_m
         remaining_package_ids[current_package_id-1][1] += package_weight
 
 
-
+    remaining_package_ids.sort(key=sort_by_weight, reverse=True)
 
     print(remaining_package_ids)
 
