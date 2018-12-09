@@ -26,6 +26,11 @@ class Package:
     def set_distance_list_id(self, distance_id):
         self.distance_list_id = distance_id
 
+    def has_deadline(self):
+        if 'EOD' not in self.package_deadline:
+            return True
+        
+        return False
 
     def update_delivery_status(self, new_status):
         self.package_status = new_status

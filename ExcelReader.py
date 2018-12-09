@@ -75,4 +75,12 @@ def time_as_str(excel_time):
     minutes *= 60
     minutes = int(minutes)
 
-    return str(hours) + ':' + str(minutes)
+    time_str = str(hours) + ':' + str(minutes)
+
+    if hours < 10: #pad hours with a zero
+        time_str = '0' + time_str
+    
+    if minutes < 10: #pad minutes with a zero
+        time_str = time_str[:3] + '0' + time_str[3:]
+
+    return time_str

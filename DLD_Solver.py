@@ -10,7 +10,7 @@ distance_matrix = ExcelReader.read_in_distances()
 
 #read in package data and store in table  
 packages_table = ExcelReader.read_in_packages(distance_matrix)   
-
+print(packages_table)
 #print(packages_table)
 #print(len(distance_matrix))
 
