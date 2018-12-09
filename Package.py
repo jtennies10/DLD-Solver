@@ -4,7 +4,7 @@
 class Package:
     def __init__(self, package_id, address, city, state, zip,
     package_deadline, weight_in_kilograms, 
-    special_notes, package_status, distance_list_id):
+    special_notes, distance_list_id):
         self.package_id = int(package_id)
         self.address = address
         self.city = city
@@ -13,7 +13,6 @@ class Package:
         self.package_deadline = package_deadline
         self.weight_in_kilograms = weight_in_kilograms
         self.special_notes = special_notes
-        self.package_status = package_status
         self.distance_list_id = distance_list_id
     
     def get_package_id(self):
@@ -32,8 +31,6 @@ class Package:
         
         return False
 
-    def update_delivery_status(self, new_status):
-        self.package_status = new_status
 
     def __str__(self):
         package_as_str = ''
@@ -46,6 +43,6 @@ class Package:
         package_as_str += ('Deadline:' + self.package_deadline + ' ')
         package_as_str += (str(self.weight_in_kilograms) + 'kg ')
         package_as_str += ('Notes:' + self.special_notes + ' ')
-        package_as_str += ('Status:' + self.package_status + ' ')
+        
 
         return package_as_str

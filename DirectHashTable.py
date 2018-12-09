@@ -8,8 +8,8 @@ class DirectHashTable:
     """
     Initializes the table with an empty dictionary
     """
-    def __init__(self):
-        self.table = {}
+    def __init__(self, table = {}):
+        self.table = table
         self.current = 1
 
     """

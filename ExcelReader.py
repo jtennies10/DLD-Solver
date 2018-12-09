@@ -42,7 +42,7 @@ def read_in_packages(distance_matrix):
         
         current_package = Package(package_id, address, city, state, zipcode,
                             package_deadline, weight_in_kg, special_notes, 
-                            'waiting', distance_list_id)
+                            distance_list_id)
         temp_packages_table.add_element(package_id, current_package)
 
     return temp_packages_table

@@ -137,6 +137,8 @@ def calculate_near_optimal_route(trucks_in_optimal_route, distance_matrix, packa
             current_truck_index = i + (inc - Truck.NUM_DRIVERS)
             current_driver = i
 
+            print('Driver' + str(current_driver))
+
             packages_on_truck = 0
 
             #check to see if the current truck is truck two
@@ -252,8 +254,10 @@ def calculate_near_optimal_route(trucks_in_optimal_route, distance_matrix, packa
     return round(minimum_distance, 1)
 
 
-    def packages_at_time(packages_table, hours, minutes):
-        #print the status of each package at the given time
-        return 'package statuses here'
+def packages_at_time(packages_table, distance_matrix, hours, minutes):
+    #print the status of each package at the given time
+    
+
+    return 'package statuses here'
 
 
