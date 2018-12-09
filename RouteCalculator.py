@@ -137,7 +137,7 @@ def calculate_near_optimal_route(trucks_in_optimal_route, distance_matrix, packa
             current_truck_index = i + (inc - Truck.NUM_DRIVERS)
             current_driver = i
 
-            print('Driver' + str(current_driver))
+            #print('Driver' + str(current_driver))
 
             packages_on_truck = 0
 
@@ -158,6 +158,8 @@ def calculate_near_optimal_route(trucks_in_optimal_route, distance_matrix, packa
                 
                     minimum_distance += nextMinMovement
                     add_delivery_time(driver_times, current_driver, nextMinMovement)
+                    packages_table.search(truck_two_id).set_delivered_time(
+                        driver_times[current_driver][0], driver_times[current_driver][1])
                     last_distance_id = packages_table.search(truck_two_id).get_distance_list_id()
                     packages_on_truck += 1
 
@@ -214,7 +216,9 @@ def calculate_near_optimal_route(trucks_in_optimal_route, distance_matrix, packa
                     for grouped_id in grouped_package_ids:
                         trucks_in_optimal_route[current_truck_index].add_package_id(grouped_id)
                         remaining_package_ids.remove(grouped_id)
-                        
+
+                        package = packages_table.search(grouped_id)
+
                         if package.get_distance_list_id() >= last_distance_id:
                             nextMinMovement = float(
                                 distance_matrix[package.get_distance_list_id()][last_distance_id+2])
@@ -225,6 +229,8 @@ def calculate_near_optimal_route(trucks_in_optimal_route, distance_matrix, packa
                         
                         minimum_distance += nextMinMovement
                         add_delivery_time(driver_times, current_driver, nextMinMovement)
+                        packages_table.search(grouped_id).set_delivered_time(
+                            driver_times[current_driver][0], driver_times[current_driver][1])
                         last_distance_id = packages_table.search(grouped_id).get_distance_list_id()
                         packages_on_truck += 1
                 
@@ -234,6 +240,8 @@ def calculate_near_optimal_route(trucks_in_optimal_route, distance_matrix, packa
                     remaining_package_ids.remove(nextMovementId)
                     minimum_distance += nextMinMovement
                     add_delivery_time(driver_times, current_driver, nextMinMovement)
+                    packages_table.search(nextMovementId).set_delivered_time(
+                        driver_times[current_driver][0], driver_times[current_driver][1])
                     last_distance_id = packages_table.search(nextMovementId).get_distance_list_id()
                     packages_on_truck += 1
                 
@@ -244,7 +252,7 @@ def calculate_near_optimal_route(trucks_in_optimal_route, distance_matrix, packa
                 # print(remaining_package_ids)
 
         
-            print('returning home')
+            #print('returning home')
             return_to_hub_distance = distance_matrix[last_distance_id][2]
             minimum_distance += return_to_hub_distance
             add_delivery_time(driver_times, current_driver, return_to_hub_distance)
@@ -256,29 +264,22 @@ def calculate_near_optimal_route(trucks_in_optimal_route, distance_matrix, packa
 
 def packages_at_time(packages_table, distance_matrix, hours, minutes):
 
-    #create list [[packages delivered][packages in route]]
-    package_status_list = [[],[]]
+    for package in packages_table:
 
-    #calculate total_distance_possible in the given hours and minutes
-    total_distance_possible = ((hours - 8) + (float(minutes) / 60)) * 18
-    print(str(total_distance_possible))
-
-    #while distance_traveled <= total_distance_possible
-
-
-        #add current package on each simultaneous truck to packages delivered
-
-
-    #add packages on trucks currently out to packages in route
-
-    #for package in packages_table
-        #print package
-        #if package is in packages delivered
-            #print delivered
-        #elif package is in packes in route
-            #print in route
-        #else package must not be out for delivery yet
-            #print not out for delivery yet
+        print(package)
+        # print('Set hours:' + str(package.delivered_hours))
+        # print('Set minutes:' + str(package.delivered_minutes))
+        if package.delivered_hours < hours:
+            # print(str(package.delivered_hours))
+            # print(str(hours))
+            print('Status: Delivered\n')
+        elif package.delivered_hours == hours:
+            if package.delivered_minutes <= minutes:
+                print('Status:Delivered\n')
+            else:
+                print('Status:Not Yet Delivered\n')
+        else:
+            print('Status:Not Yet Delivered\n')
 
 
 

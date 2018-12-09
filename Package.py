@@ -14,8 +14,8 @@ class Package:
         self.weight_in_kilograms = weight_in_kilograms
         self.special_notes = special_notes
         self.distance_list_id = distance_list_id
-        self.delivered_hours = -1
-        self.delivered_minutes = -1
+        self.delivered_hours = 24
+        self.delivered_minutes = 60
     
     def get_package_id(self):
         return self.package_id
