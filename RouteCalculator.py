@@ -2,103 +2,84 @@ import sys
 #import truck
 from Truck import *
 
-# TIME_SENSITIVE_WEIGHT = 5
-# GROUPED_TOGETHER_WEIGHT = 4
-# TRUCK_TWO_ONLY_WEIGHT = 3
-# DELAYED_WEIGHT = 2
-# WRONG_ADDRESS_WEIGHT = 1
 
-# #adds grouped weight if not already added
-# def add_grouped_package_weight(current_package_weight):
+
+def calculate_greedy_route(greedy_list, packages_table, distance_matrix):
+    calculated_route = list()
+    inc = 0
+    while len(greedy_list) > 0:
+        inc += 1
+        last_distance_id = 0
+        nextMinMovement = float(sys.maxsize)
+        nextMovementId = -1
+        for package_id in greedy_list:
+            #print(package_id)
+            # print(str(last_distance_id))
+
+            currentMovement = int()
+            #print(str(package_id))
+            package = packages_table.search(package_id)
+            # if package is None: break
+
+            if package.get_distance_list_id() >= last_distance_id:
+                currentMovement = float(
+                    distance_matrix[package.get_distance_list_id()][last_distance_id+2])
+
+            else:
+                currentMovement = float(
+                    distance_matrix[last_distance_id][package.get_distance_list_id()+2])
+            
+            #print(str(currentMovement))
+            if  (currentMovement < nextMinMovement ):
+                # and trucks_in_optimal_route[i].get_package_ids_on_board().count(
+                #     package.get_package_id()) < 1):
+                #print('true')
+                nextMinMovement = currentMovement
+                nextMovementId = package.get_package_id()
+
+        # print(str(nextMovementId))
+        last_distance_id = packages_table.search(nextMovementId).get_distance_list_id()
+        calculated_route.append(nextMovementId)
+        greedy_list.remove(nextMovementId)
+        #minimum_distance += nextMinMovement
+        # print('\n\n\n' + str(nextMinMovement))
+        # print(str(minimum_distance) + '\n\n\n')
+
+        # print(remaining_package_ids)
+
+    return calculated_route
+
+def add_delivery_time(drivers_times, current_driver, delivery_distance):
+    current_driver_hours = drivers_times[current_driver][0]
+    current_driver_minutes = drivers_times[current_driver][1] 
     
-#     if int(current_package_weight / TIME_SENSITIVE_WEIGHT) == 1:
-#         current_package_weight %= 5
+    #calculate the delivery time in minutes
+    #time = distance * 1/TRUCK_SPEED_MPH * 60 minutes
+    delivery_time = round(delivery_distance * (1/Truck.TRUCK_SPEED_MPH) * 60) 
+    print(str(delivery_time))
+    current_driver_minutes += delivery_time 
+    if current_driver_minutes >= 60: #negate the 
+        current_driver_hours += int(current_driver_minutes / 60)
+        current_driver_minutes %= 60
+    
+    drivers_times[current_driver][0] = current_driver_hours
+    drivers_times[current_driver][1] = current_driver_minutes
         
-#     if current_package_weight / GROUPED_TOGETHER_WEIGHT == 1: #package weight was already added
-#         return 0
-#     else: #grouped weight has not yet been added
-#         return GROUPED_TOGETHER_WEIGHT
-
-# def sort_by_weight(id):
-#     return id[1]
-
-def calculate_near_optimal_route(trucks_in_optimal_route, table_size, distance_matrix, packages_table):
-
     
 
-    minimum_distance = float()
 
-    # #create a list of tuples holding a package id and its given 
-    # #weight based on the factors below
-    # remaining_package_ids = list()
-    # for i in range(1, len(packages_table.table)+1):
-    #     remaining_package_ids.append([i, 0])
-
+def calculate_near_optimal_route(trucks_in_optimal_route, distance_matrix, packages_table):
     
-
+    minimum_distance = float() #holds the total miles of the route
     GROUPED_TOGETHER_STR = 'Must be delivered with '
-    
-    
-    # for package in packages_table:
-    #     current_deadline = package.package_deadline
-    #     current_special_notes = package.special_notes
-    #     current_package_id = package.get_package_id()
-    #     #print(str(current_package_id)) 
-    #     #print(current_special_notes)
-    #     package_weight = 0
-    #     #assign package to correct nested list based on conditions
-    #     if 'EOD' not in current_deadline:
-    #         #print('time-sens')
-    #         #add time_sensitive_weight
-    #         package_weight += TIME_SENSITIVE_WEIGHT
-
-    #     #check for a special note, there can only be one    
-    #     if current_special_notes.find(GROUPED_TOGETHER_STR) >= 0:
-            
-    #         #add to grouped_together, ISSUE OF NOT ADDING WEIGHT TO ALL
-    #         package_weight += add_grouped_package_weight(package_weight)
-    #         grouped_packages = current_special_notes[
-    #             len(GROUPED_TOGETHER_STR):len(current_special_notes)]
-            
-    #         grouped_packages = grouped_packages.split(', ') 
-    #         for i in grouped_packages: #call add_grouped_packaged_weight on each item
-    #             #print(i)
-    #             #print(str(remaining_package_ids[int(i)-1][1]))
-    #             #print('looping')
-    #             remaining_package_ids[int(i)-1][1] += add_grouped_package_weight(
-    #                 remaining_package_ids[int(i)-1][1])
-
-    #         #print(remaining_package_ids)
-
-
-    #     elif 'truck 2' in current_special_notes:
-    #         #print('truck two')
-    #         #add to truck_two
-    #         package_weight += TRUCK_TWO_ONLY_WEIGHT
-    #     elif 'Delayed' in current_special_notes:
-    #         #add to delayed
-    #         package_weight += DELAYED_WEIGHT
-    #     elif 'Wrong address listed' in current_special_notes:
-    #         #add to wrong_address
-    #         package_weight += WRONG_ADDRESS_WEIGHT
-         
-    #     remaining_package_ids[current_package_id-1][1] += package_weight
-
-
-    # remaining_package_ids.sort(key=sort_by_weight, reverse=True)
-
-    #print(remaining_package_ids)
-
-    #next steps:
-    # revamp greedy section of algorithm to select next routes
-    # first based on weight, then based on distance
-    # then start considering the delayed routes and the incorrect address
 
     remaining_package_ids = list(range(1,len(packages_table.table)+1))
 
     grouped_package_ids = list()
     truck_two_packages_only = list()
 
+    #iterate through the packages, adding each package to grouped_package_ids
+    #or truck_two_packages_only if necessary
     for i in remaining_package_ids:
         package = packages_table.search(i)
         current_special_notes = package.special_notes
@@ -119,61 +100,89 @@ def calculate_near_optimal_route(trucks_in_optimal_route, table_size, distance_m
         elif 'truck 2' in package.special_notes:
             truck_two_packages_only.append(i)  
 
-    print(grouped_package_ids)
-    print(truck_two_packages_only)
+    #greedy algorithm both the grouped_package_ids
+    #and the truck_two_packages_only
+    grouped_package_ids = calculate_greedy_route(
+        grouped_package_ids, packages_table, distance_matrix)
+    truck_two_packages_only = calculate_greedy_route(
+        truck_two_packages_only, packages_table, distance_matrix)
 
-    for i in range(0,len(trucks_in_optimal_route)):
-        inc = 0
+    # print(grouped_package_ids)
+    # print(truck_two_packages_only)
+
+    #create a list holding the time of day each driver is at
+    driver_times = list()
+    for driver in range(0, Truck.NUM_DRIVERS):
+        driver_times.append([8,0]) #add each drivers time to the list, initialized as 8:00
+
+    # add_delivery_time(driver_times, 0, 18)
+    # add_delivery_time(driver_times, 0, 20)
+
+    # print(driver_times)
+
+    #greedy algorithm all the packages, keeping track of time throughout
+    #to see if a package can be added or must be added, add
+    #grouped or truck 2 lists altogether when appropriate
+    
+    #iterate through each set of trucks, incrementing by the number of drivers
+    #to symbolize the fact each driver can be moving at the same time
+    inc = 0
+    while inc < Truck.NUM_TRUCKS:
+        inc += Truck.NUM_DRIVERS
+        
         last_distance_id = 0
+        
+        for i in range(0,Truck.NUM_DRIVERS):
+            #TODO:check if this is truck 2 
+            current_truck_index = i + (inc - Truck.NUM_DRIVERS)
 
-        while inc < Truck.PACKAGE_CAPACITY and len(remaining_package_ids) > 0:
-            inc += 1
-
-            
-            
-            
-            # inc += 1
-            # nextMinMovement = float(sys.maxsize)
-            # nextMovementId = -1
-            # for package_id in remaining_package_ids: #fix to iterate on each item in a list
-            #     #print(package_id)
-            #     # print(str(last_distance_id))
-
-            #     currentMovement = int()
-            #     print(str(package_id))
-            #     package = packages_table.search(package_id)
-            #     if package is None: break
-
-            #     if package.get_distance_list_id() >= last_distance_id:
-            #         currentMovement = float(
-            #             distance_matrix[package.get_distance_list_id()][last_distance_id+2])
-
-            #     else:
-            #         currentMovement = float(
-            #             distance_matrix[last_distance_id][package.get_distance_list_id()+2])
+            packages_on_truck = 0
+            while packages_on_truck < Truck.PACKAGE_CAPACITY and len(remaining_package_ids) > 0:
                 
-            #     #print(str(currentMovement))
-            #     if  (currentMovement < nextMinMovement ):
-            #         # and trucks_in_optimal_route[i].get_package_ids_on_board().count(
-            #         #     package.get_package_id()) < 1):
-            #         #print('true')
-            #         nextMinMovement = currentMovement
-            #         nextMovementId = package.get_package_id()
+                nextMinMovement = float(sys.maxsize)
+                nextMovementId = -1
+                for package_id in remaining_package_ids: #fix to iterate on each item in a list
+                    #print(package_id)
+                    # print(str(last_distance_id))
 
-            # print(str(nextMovementId))
-            # last_distance_id = packages_table.search(nextMovementId).get_distance_list_id()
-            # trucks_in_optimal_route[i].add_package_id(nextMovementId)
-            # remaining_package_ids.remove(nextMovementId)
-            # minimum_distance += nextMinMovement
-            # print('\n\n\n' + str(nextMinMovement))
-            # print(str(minimum_distance) + '\n\n\n')
+                    currentMovement = int()
+                    # print(str(package_id))
+                    package = packages_table.search(package_id)
+                    if package is None: break
 
-            #print(remaining_package_ids)
+                    if package.get_distance_list_id() >= last_distance_id:
+                        currentMovement = float(
+                            distance_matrix[package.get_distance_list_id()][last_distance_id+2])
+
+                    else:
+                        currentMovement = float(
+                            distance_matrix[last_distance_id][package.get_distance_list_id()+2])
+                    
+                    #print(str(currentMovement))
+                    if  (currentMovement < nextMinMovement ):
+                        # and trucks_in_optimal_route[i].get_package_ids_on_board().count(
+                        #     package.get_package_id()) < 1):
+                        #print('true')
+                        nextMinMovement = currentMovement
+                        nextMovementId = package.get_package_id()
+
+                # print(str(nextMovementId))
+                last_distance_id = packages_table.search(nextMovementId).get_distance_list_id()
+                trucks_in_optimal_route[current_truck_index].add_package_id(nextMovementId)
+                remaining_package_ids.remove(nextMovementId)
+                minimum_distance += nextMinMovement
+
+                packages_on_truck += 1
+
+                # print('\n\n\n' + str(nextMinMovement))
+                # print(str(minimum_distance) + '\n\n\n')
+
+                # print(remaining_package_ids)
 
         
-            #TODO:add miles to return to office
-        # print('returning home')
-        # minimum_distance += distance_matrix[last_distance_id][2]
+            # TODO:add miles to return to office
+        print('returning home')
+        minimum_distance += distance_matrix[last_distance_id][2]
 
     return round(minimum_distance, 1)
 

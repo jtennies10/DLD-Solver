@@ -4,7 +4,7 @@
     packages_on_board represents the packages on the truck"""
 class Truck:
     PACKAGE_CAPACITY = 16
-    TRUCK_SPEED = 18
+    TRUCK_SPEED_MPH = 18
     NUM_TRUCKS = 3
     NUM_DRIVERS = 2
     miles_driven = 0
