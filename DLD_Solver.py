@@ -5,6 +5,20 @@ import ExcelReader
 import RouteCalculator
 
 
+def is_hours_valid(hours):
+    if hours >= 8 and hours <= 23:
+        return True
+
+    return False
+
+def is_minutes_valid(minutes):
+    if minutes >= 0 and minutes <= 59:
+        return True
+
+    return False
+
+
+
 #read in distance matrix data into a two dimensional list
 distance_matrix = ExcelReader.read_in_distances()
 
@@ -30,8 +44,27 @@ for truck in trucks_in_optimal_route:
 print(str(totalMiles))
 
 
+hours = 0
+minutes = 0
+
+while True:
+    print('Enter hours and minutes below to see each package\'s status at that time')
+    hours = int(input('Hours(24hr format, -1 to quit):'))
+    if hours == -1:
+        break
+    if not is_hours_valid(hours):
+        print('Invalid hours. Please enter hour between 8 and 23')
+        continue
+    minutes = int(input('Minutes:'))
+    if not is_minutes_valid(minutes):
+        print('Invalid minutes. Please enter minutes between 0 and 59')
+        continue
 
 
+    #create function to step through the 
+    #route and update package statuses
+    RouteCalculator.packages_at_time(packages_table, 
+    hours, minutes)
 
 
 

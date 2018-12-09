@@ -251,3 +251,9 @@ def calculate_near_optimal_route(trucks_in_optimal_route, distance_matrix, packa
     print(driver_times)
     return round(minimum_distance, 1)
 
+
+    def packages_at_time(packages_table, hours, minutes):
+        #print the status of each package at the given time
+        return 'package statuses here'
+
+
