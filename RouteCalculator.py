@@ -55,7 +55,7 @@ def add_delivery_time(driver_times, current_driver, delivery_distance):
     
     #calculate the delivery time in minutes
     #time = distance * 1/TRUCK_SPEED_MPH * 60 minutes
-    delivery_time = int(delivery_distance * (1/Truck.TRUCK_SPEED_MPH) * 60) 
+    delivery_time = round(delivery_distance / Truck.TRUCK_SPEED_MPH * 60) 
     #print(str(delivery_time))
     current_driver_minutes += delivery_time 
     if current_driver_minutes >= 60: #negate the 
