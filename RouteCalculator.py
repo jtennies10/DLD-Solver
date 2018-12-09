@@ -161,13 +161,20 @@ def calculate_near_optimal_route(trucks_in_optimal_route, distance_matrix, packa
                     
                     #print(str(currentMovement))
                     if  currentMovement < nextMinMovement or package.has_deadline():
-                        # if packages_table.search(nextMovementId).has_deadline():
-                            #if
+                        print(str(nextMovementId))
+                        if (nextMovementId != -1 and 
+                            packages_table.search(nextMovementId).has_deadline()): #compare deadlines
+                            if package.package_deadline < packages_table.search(
+                                nextMovementId).package_deadline:
+                                nextMinMovement = currentMovement
+                                nextMovementId = package.get_package_id()
+                        else:
+                            nextMinMovement = currentMovement
+                            nextMovementId = package.get_package_id()    
                         # and trucks_in_optimal_route[i].get_package_ids_on_board().count(
                         #     package.get_package_id()) < 1):
                         #print('true')
-                        nextMinMovement = currentMovement
-                        nextMovementId = package.get_package_id()
+                    
 
                 # print(str(nextMovementId))
 
@@ -191,6 +198,7 @@ def calculate_near_optimal_route(trucks_in_optimal_route, distance_matrix, packa
                         minimum_distance += nextMinMovement
                         add_delivery_time(driver_times, current_driver, nextMinMovement)
                         last_distance_id = packages_table.search(grouped_id).get_distance_list_id()
+                        packages_on_truck += 1
                 
                 else:
                     
@@ -199,8 +207,8 @@ def calculate_near_optimal_route(trucks_in_optimal_route, distance_matrix, packa
                     minimum_distance += nextMinMovement
                     add_delivery_time(driver_times, current_driver, nextMinMovement)
                     last_distance_id = packages_table.search(nextMovementId).get_distance_list_id()
-
-                packages_on_truck += 1
+                    packages_on_truck += 1
+                
 
                 # print('\n\n\n' + str(nextMinMovement))
                 # print(str(minimum_distance) + '\n\n\n')
