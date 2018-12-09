@@ -133,11 +133,34 @@ def calculate_near_optimal_route(trucks_in_optimal_route, distance_matrix, packa
         last_distance_id = 0
         
         for i in range(0,Truck.NUM_DRIVERS):
-            #TODO:check if this is truck 2 
+
             current_truck_index = i + (inc - Truck.NUM_DRIVERS)
             current_driver = i
 
             packages_on_truck = 0
+
+            #check to see if the current truck is truck two
+            if current_truck_index+1 == 2: #add the packages for truck_two only
+                nextMinMovement = float(sys.maxsize)
+                for truck_two_id in truck_two_packages_only:
+                    trucks_in_optimal_route[current_truck_index].add_package_id(truck_two_id)
+                    remaining_package_ids.remove(truck_two_id)
+                    
+                    if package.get_distance_list_id() >= last_distance_id:
+                        nextMinMovement = float(
+                            distance_matrix[package.get_distance_list_id()][last_distance_id+2])
+
+                    else:
+                        nextMinMovement = float(
+                            distance_matrix[last_distance_id][package.get_distance_list_id()+2])
+                
+                    minimum_distance += nextMinMovement
+                    add_delivery_time(driver_times, current_driver, nextMinMovement)
+                    last_distance_id = packages_table.search(truck_two_id).get_distance_list_id()
+                    packages_on_truck += 1
+
+            #print('Truck:' + str(current_truck_index+1), 'Packages:' + str(packages_on_truck))        
+
             while packages_on_truck < Truck.PACKAGE_CAPACITY and len(remaining_package_ids) > 0:
                 
                 nextMinMovement = float(sys.maxsize)
@@ -149,7 +172,10 @@ def calculate_near_optimal_route(trucks_in_optimal_route, distance_matrix, packa
                     currentMovement = int()
                     # print(str(package_id))
                     package = packages_table.search(package_id)
-                    #if package is None: break
+
+                    #check to see if this package can only be on truck two,
+                    #if so end this iteration and continue to the next
+                    if 'truck 2' in package.special_notes: continue
 
                     if package.get_distance_list_id() >= last_distance_id:
                         currentMovement = float(
@@ -160,8 +186,8 @@ def calculate_near_optimal_route(trucks_in_optimal_route, distance_matrix, packa
                             distance_matrix[last_distance_id][package.get_distance_list_id()+2])
                     
                     #print(str(currentMovement))
-                    if  currentMovement < nextMinMovement or package.has_deadline():
-                        print(str(nextMovementId))
+                    if  (currentMovement < nextMinMovement or package.has_deadline()):
+                        #print(str(nextMovementId))
                         if (nextMovementId != -1 and 
                             packages_table.search(nextMovementId).has_deadline()): #compare deadlines
                             if package.package_deadline < packages_table.search(
