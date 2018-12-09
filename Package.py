@@ -14,6 +14,8 @@ class Package:
         self.weight_in_kilograms = weight_in_kilograms
         self.special_notes = special_notes
         self.distance_list_id = distance_list_id
+        self.delivered_hours = -1
+        self.delivered_minutes = -1
     
     def get_package_id(self):
         return self.package_id
@@ -30,6 +32,10 @@ class Package:
             return True
         
         return False
+
+    def set_delivered_time(self, hours, minutes):
+        self.delivered_hours = hours
+        self.delivered_minutes = minutes
 
 
     def __str__(self):

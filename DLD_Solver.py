@@ -63,8 +63,8 @@ while True:
 
     #create function to step through the 
     #route and update package statuses
-    print(RouteCalculator.packages_at_time(
-        packages_table, distance_matrix, hours, minutes))
+    RouteCalculator.packages_at_time(
+        packages_table, distance_matrix, hours, minutes)
 
 
 

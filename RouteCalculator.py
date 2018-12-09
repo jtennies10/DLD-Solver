@@ -255,9 +255,30 @@ def calculate_near_optimal_route(trucks_in_optimal_route, distance_matrix, packa
 
 
 def packages_at_time(packages_table, distance_matrix, hours, minutes):
-    #print the status of each package at the given time
-    
 
-    return 'package statuses here'
+    #create list [[packages delivered][packages in route]]
+    package_status_list = [[],[]]
+
+    #calculate total_distance_possible in the given hours and minutes
+    total_distance_possible = ((hours - 8) + (float(minutes) / 60)) * 18
+    print(str(total_distance_possible))
+
+    #while distance_traveled <= total_distance_possible
+
+
+        #add current package on each simultaneous truck to packages delivered
+
+
+    #add packages on trucks currently out to packages in route
+
+    #for package in packages_table
+        #print package
+        #if package is in packages delivered
+            #print delivered
+        #elif package is in packes in route
+            #print in route
+        #else package must not be out for delivery yet
+            #print not out for delivery yet
+
 
 
