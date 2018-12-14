@@ -8,6 +8,15 @@ from DirectHashTable import *
 from Package import *
 import xlrd
 
+
+"""
+Reads in the package data from the WGUPS Package File
+Each row in the file creates a Package object which retains
+the given row's information
+Each package is added to the temp_packages_table
+
+@return a DirectHashTable of all the packages
+"""
 def read_in_packages(distance_matrix):
     temp_packages_table = DirectHashTable()
 
@@ -56,6 +65,11 @@ def read_in_packages(distance_matrix):
 
     return temp_packages_table
 
+
+"""
+Reads in the distance matrix from WGUPS Distance Table
+@return the two-dimensional list of distances
+"""
 def read_in_distances():
     distance_matrix = list()
     loc = "WGUPS Distance Table.xlsx"

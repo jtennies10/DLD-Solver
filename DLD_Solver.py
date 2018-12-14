@@ -1,16 +1,28 @@
+""" Joshua Tennies Student ID:#000885921"""
+
+"""
+The main controller for the program, instantiates objects,
+gathers user input, and controls the flow of the program
+"""
+
 from Truck import *
-from Package import *
-from DirectHashTable import *
 import ExcelReader
 import RouteCalculator
 
-
+"""
+Checks to see if a passed in hour is valid
+@return True if valid, False if not
+"""
 def is_hours_valid(hours):
     if hours >= 8 and hours <= 23:
         return True
 
     return False
 
+"""
+Checks to see if a passed in minute is valid
+@return True if valid, False if not
+"""
 def is_minutes_valid(minutes):
     if minutes >= 0 and minutes <= 59:
         return True
@@ -25,11 +37,6 @@ distance_matrix = ExcelReader.read_in_distances()
 #read in package data and store in table  
 packages_table = ExcelReader.read_in_packages(distance_matrix)   
 
-#print(packages_table)
-#print(len(distance_matrix))
-
-
-# table_size = packages_table.size()
 #initialize the trucks used to deliver 
 #the packages
 trucks_in_optimal_route = list()
@@ -39,14 +46,14 @@ for i in range(0,Truck.NUM_TRUCKS):
 #calculate the full route
 totalMiles = RouteCalculator.calculate_near_optimal_route(
     trucks_in_optimal_route, distance_matrix, packages_table)
-for truck in trucks_in_optimal_route:
-    print(str(truck) + '\n')
-print(str(totalMiles))
 
-
+#create hours and minutes variables that store user inputted
+#hours and minutes
 hours = 0
 minutes = 0
 
+#prompt user for hours and minutes to see package statuses
+#based on the entered times, quit if -1 entered for hours
 while True:
     print('Enter hours and minutes below to see each package\'s status at that time')
     hours = int(input('Hours(24hr format, -1 to quit):'))
@@ -61,10 +68,8 @@ while True:
         continue
 
 
-    #create function to step through the 
-    #route and update package statuses
-    RouteCalculator.packages_at_time(
-        packages_table, distance_matrix, hours, minutes)
+    #call packages_at_time using current hours and minutes
+    RouteCalculator.packages_at_time(packages_table, distance_matrix, hours, minutes)
 
 
 

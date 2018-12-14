@@ -3,6 +3,7 @@ Defines the DirectHashTable, which uses a dictionary to store
 hash buckets. Since in a direct hash table the key is the index,
 a dictionary is in essence a direct hash table.
 """
+
 class DirectHashTable:
 
     """
@@ -45,22 +46,36 @@ class DirectHashTable:
         else:
             return False
 
+    """
+    Returns the size of the hash table
+    """
     def size(self):
         return len(self.table)
 
-    def copy(self):
-        return self.table.copy()
-
+    """
+    Defines the special function __iter__ which 
+    allows the table to be iterated over
+    """
     def __iter__(self):
         self.current = 1
         return self
 
+    """
+    Defines the special function __next__ which 
+    moves the iterator location from iteration 
+    to iteration
+    """
     def __next__(self):
         if(self.current <= len(self.table)):
             self.current += 1
             return self.table[self.current - 1]
         raise StopIteration
 
+    """
+    Defines the special function __str__ which
+    return the elements in the hash table as 
+    one collective string
+    """
     def __str__(self):
         elements_as_str = ''
         for element in self.table:

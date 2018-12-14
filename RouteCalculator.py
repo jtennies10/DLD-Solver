@@ -3,24 +3,33 @@ import sys
 from Truck import *
 
 
-
+"""
+Given a list of packages, calculates the route to take with those packages
+in a greedy manner, this algorithm is meant for grouped packages such as 
+those that must be delivered together or can only be on truck 2
+@return the list of package in order of the route to take
+"""
 def calculate_greedy_route(greedy_list, packages_table, distance_matrix):
-    calculated_route = list()
+    calculated_route = list() 
     inc = 0
+
+    #loop through greedy_list finding the next best package to deliver
+    #and add it to calculated_route, also remove that package from the 
+    #greedy_list
     while len(greedy_list) > 0:
         inc += 1
         last_distance_id = 0
         nextMinMovement = float(sys.maxsize)
         nextMovementId = -1
         for package_id in greedy_list:
-            #print(package_id)
-            # print(str(last_distance_id))
 
             currentMovement = int()
-            #print(str(package_id))
-            package = packages_table.search(package_id)
-            # if package is None: break
 
+            package = packages_table.search(package_id)
+
+            #search the distance matrix based on which distance id is greater,
+            #because searching the smaller id's row for the larger id column
+            #will yield an error
             if package.get_distance_list_id() >= last_distance_id:
                 currentMovement = float(
                     distance_matrix[package.get_distance_list_id()][last_distance_id+2])
@@ -28,47 +37,51 @@ def calculate_greedy_route(greedy_list, packages_table, distance_matrix):
             else:
                 currentMovement = float(
                     distance_matrix[last_distance_id][package.get_distance_list_id()+2])
-            
-            #print(str(currentMovement))
-            if  (currentMovement < nextMinMovement ):
-                # and trucks_in_optimal_route[i].get_package_ids_on_board().count(
-                #     package.get_package_id()) < 1):
-                #print('true')
+
+            #check if the given package is closer than the currently 
+            #stored next movement
+            if  (currentMovement < nextMinMovement):
                 nextMinMovement = currentMovement
                 nextMovementId = package.get_package_id()
 
-        # print(str(nextMovementId))
         last_distance_id = packages_table.search(nextMovementId).get_distance_list_id()
         calculated_route.append(nextMovementId)
         greedy_list.remove(nextMovementId)
-        #minimum_distance += nextMinMovement
-        # print('\n\n\n' + str(nextMinMovement))
-        # print(str(minimum_distance) + '\n\n\n')
-
-        # print(remaining_package_ids)
 
     return calculated_route
 
+"""
+Adds onto the current_driver's delivery time based on the delivery_distance
+"""
 def add_delivery_time(driver_times, current_driver, delivery_distance):
+    #retrieve the driver's current time
     current_driver_hours = driver_times[current_driver][0]
     current_driver_minutes = driver_times[current_driver][1] 
     
     #calculate the delivery time in minutes
-    #time = distance * 1/TRUCK_SPEED_MPH * 60 minutes
     delivery_time = round(delivery_distance / Truck.TRUCK_SPEED_MPH * 60) 
-    #print(str(delivery_time))
+    
     current_driver_minutes += delivery_time 
-    if current_driver_minutes >= 60: #negate the 
+    
+    #check to see if adding the delivery time on made minutes exceed 59,
+    #if so convert minutes to hours as necessary
+    if current_driver_minutes >= 60:  
         current_driver_hours += int(current_driver_minutes / 60)
         current_driver_minutes %= 60
     
+
+    #set the driver_times to the updated times
     driver_times[current_driver][0] = current_driver_hours
     driver_times[current_driver][1] = current_driver_minutes
         
+"""
+Checks to see if a given package notes is deliverable based
+on what time the package is delayed until  or has the wrong address until
+and what is the time of the current_driver
+"""
 def is_package_deliverable(package_notes, driver_times, current_driver):
+    #get the starting index of the time in the package_notes
     time_start = package_notes.index('until ') + 6
-    # print(str(time_start))
-    # print(str(len(package_notes)))
 
     fixed_hour = 0
     fixed_minute = 0 
@@ -79,12 +92,11 @@ def is_package_deliverable(package_notes, driver_times, current_driver):
         fixed_hour = int(package_notes[time_start:time_start+2])
         fixed_minute = int(package_notes[time_start+3:time_start+5])
 
-    print(str(driver_times[current_driver][0]) + ':' + str(driver_times[current_driver][1]))
-
+    #retrieve driver's current time
     driver_hour = driver_times[current_driver][0]
     driver_minute = driver_times[current_driver][1]
 
-    if fixed_hour > driver_hour:
+    if fixed_hour > driver_hour: 
         return False
     elif fixed_hour == driver_hour and fixed_minute >= driver_minute:
         return False
