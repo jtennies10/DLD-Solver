@@ -65,6 +65,31 @@ def add_delivery_time(driver_times, current_driver, delivery_distance):
     driver_times[current_driver][0] = current_driver_hours
     driver_times[current_driver][1] = current_driver_minutes
         
+def is_package_deliverable(package_notes, driver_times, current_driver):
+    time_start = package_notes.index('until ') + 6
+    # print(str(time_start))
+    # print(str(len(package_notes)))
+
+    fixed_hour = 0
+    fixed_minute = 0 
+    if len(package_notes) - time_start == 7: #hours is a single digit
+        fixed_hour = int(package_notes[time_start:time_start+1])
+        fixed_minute = int(package_notes[time_start+2:time_start+4])
+    else: #hours is two digits
+        fixed_hour = int(package_notes[time_start:time_start+2])
+        fixed_minute = int(package_notes[time_start+3:time_start+5])
+
+    print(str(driver_times[current_driver][0]) + ':' + str(driver_times[current_driver][1]))
+
+    driver_hour = driver_times[current_driver][0]
+    driver_minute = driver_times[current_driver][1]
+
+    if fixed_hour > driver_hour:
+        return False
+    elif fixed_hour == driver_hour and fixed_minute >= driver_minute:
+        return False
+    else: #package can be delivered
+        return True
     
 
 
@@ -169,7 +194,7 @@ def calculate_near_optimal_route(trucks_in_optimal_route, distance_matrix, packa
                 
                 nextMinMovement = float(sys.maxsize)
                 nextMovementId = -1
-                for package_id in remaining_package_ids: #fix to iterate on each item in a list
+                for package_id in remaining_package_ids: 
                     #print(package_id)
                     # print(str(last_distance_id))
 
@@ -181,11 +206,20 @@ def calculate_near_optimal_route(trucks_in_optimal_route, distance_matrix, packa
                     #if so end this iteration and continue to the next
                     if 'truck 2' in package.special_notes: continue
 
+                    if ('Delayed on flight' in package.special_notes 
+                        or 'Wrong address listed' in package.special_notes):
+                        if not is_package_deliverable(package.special_notes, driver_times, current_driver):
+                            print('not yet')
+                            continue
+
+
                     if package.get_distance_list_id() >= last_distance_id:
                         currentMovement = float(
                             distance_matrix[package.get_distance_list_id()][last_distance_id+2])
 
                     else:
+                        # print(str(package.package_id))
+                        # print(package)
                         currentMovement = float(
                             distance_matrix[last_distance_id][package.get_distance_list_id()+2])
                     

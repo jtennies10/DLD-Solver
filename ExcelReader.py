@@ -30,6 +30,15 @@ def read_in_packages(distance_matrix):
 
        	weight_in_kg = sheet.cell_value(i, 6)
         special_notes = sheet.cell_value(i, 7)
+        #deal with wrong address by setting the 
+        #correct address and adding the time to 
+        #special_notes
+        if special_notes == 'Wrong address listed':
+            address = '410 S State St'
+            special_notes = special_notes + ', not corrected until 10:20 AM'
+
+
+
         distance_list_id = -1
 
         #parse through the distance matrix and find the distance list with
