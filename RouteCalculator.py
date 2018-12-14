@@ -154,105 +154,56 @@ def calculate_near_optimal_route(trucks_in_optimal_route, distance_matrix, packa
     inc = 0
     while inc < Truck.NUM_TRUCKS:
         inc += Truck.NUM_DRIVERS
-        
+        t2_only_added = False
+
         last_distance_id = 0
         
-        for i in range(0,Truck.NUM_DRIVERS):
+        for package_i in range(0, Truck.PACKAGE_CAPACITY):
+            if not len(remaining_package_ids) > 0: #end the loop 
+                print('empty')
+                break
 
-            current_truck_index = i + (inc - Truck.NUM_DRIVERS)
-            current_driver = i
+            for current_driver in range(0,Truck.NUM_DRIVERS):
 
-            #print('Driver' + str(current_driver))
-
-            packages_on_truck = 0
-
-            #check to see if the current truck is truck two
-            if current_truck_index+1 == 2: #add the packages for truck_two only
-                nextMinMovement = float(sys.maxsize)
-                for truck_two_id in truck_two_packages_only:
-                    trucks_in_optimal_route[current_truck_index].add_package_id(truck_two_id)
-                    remaining_package_ids.remove(truck_two_id)
-                    
-                    if package.get_distance_list_id() >= last_distance_id:
-                        nextMinMovement = float(
-                            distance_matrix[package.get_distance_list_id()][last_distance_id+2])
-
-                    else:
-                        nextMinMovement = float(
-                            distance_matrix[last_distance_id][package.get_distance_list_id()+2])
                 
-                    minimum_distance += nextMinMovement
-                    add_delivery_time(driver_times, current_driver, nextMinMovement)
-                    packages_table.search(truck_two_id).set_delivered_time(
-                        driver_times[current_driver][0], driver_times[current_driver][1])
-                    last_distance_id = packages_table.search(truck_two_id).get_distance_list_id()
-                    packages_on_truck += 1
 
-            #print('Truck:' + str(current_truck_index+1), 'Packages:' + str(packages_on_truck))        
-
-            while packages_on_truck < Truck.PACKAGE_CAPACITY and len(remaining_package_ids) > 0:
+                current_truck_index = current_driver + (inc - Truck.NUM_DRIVERS)
                 
-                nextMinMovement = float(sys.maxsize)
-                nextMovementId = -1
-                for package_id in remaining_package_ids: 
-                    #print(package_id)
-                    # print(str(last_distance_id))
+                if current_truck_index >= Truck.NUM_TRUCKS:
+                    continue
 
-                    currentMovement = int()
-                    # print(str(package_id))
-                    package = packages_table.search(package_id)
+                print('TRUCK NUMBER: ' + str(current_truck_index))
+                packages_on_truck = len(trucks_in_optimal_route[
+                    current_truck_index].get_package_ids_on_board())
+                print('TRUCK PACKAGE NUM: ' + str(packages_on_truck))
 
-                    #check to see if this package can only be on truck two,
-                    #if so end this iteration and continue to the next
-                    if 'truck 2' in package.special_notes: continue
+                #if current truck is full skip to next iteration
+                if packages_on_truck >= Truck.PACKAGE_CAPACITY:
+                    continue
+                elif packages_on_truck > 0:
+                    last_distance_id = packages_table.search(trucks_in_optimal_route[current_driver]
+                        .get_package_ids_on_board()[packages_on_truck-1]).get_distance_list_id()
+                else:
+                    last_distance_id = 0
 
-                    if ('Delayed on flight' in package.special_notes 
-                        or 'Wrong address listed' in package.special_notes):
-                        if not is_package_deliverable(package.special_notes, driver_times, current_driver):
-                            print('not yet')
-                            continue
+                #print('Driver' + str(current_driver))
 
+                # packages_on_truck = 0
 
-                    if package.get_distance_list_id() >= last_distance_id:
-                        currentMovement = float(
-                            distance_matrix[package.get_distance_list_id()][last_distance_id+2])
-
-                    else:
-                        # print(str(package.package_id))
-                        # print(package)
-                        currentMovement = float(
-                            distance_matrix[last_distance_id][package.get_distance_list_id()+2])
-                    
-                    #print(str(currentMovement))
-                    if  (currentMovement < nextMinMovement or package.has_deadline()):
-                        #print(str(nextMovementId))
-                        if (nextMovementId != -1 and 
-                            packages_table.search(nextMovementId).has_deadline()): #compare deadlines
-                            if package.package_deadline < packages_table.search(
-                                nextMovementId).package_deadline:
-                                nextMinMovement = currentMovement
-                                nextMovementId = package.get_package_id()
-                        else:
-                            nextMinMovement = currentMovement
-                            nextMovementId = package.get_package_id()    
-                        # and trucks_in_optimal_route[i].get_package_ids_on_board().count(
-                        #     package.get_package_id()) < 1):
-                        #print('true')
-                    
-
-                # print(str(nextMovementId))
-
-
-                #check to see if the current minimum package is part of 
-                #grouped_package_ids, if so add all the packages to the current truck
-                #if not then add the package and continue iterating as normal
-                if nextMovementId in grouped_package_ids: #add all grouped packages
-                    for grouped_id in grouped_package_ids:
-                        trucks_in_optimal_route[current_truck_index].add_package_id(grouped_id)
-                        remaining_package_ids.remove(grouped_id)
-
-                        package = packages_table.search(grouped_id)
-
+                #check to see if the current truck is truck two
+                if (current_truck_index+1 == 2 and 
+                    packages_on_truck+len(truck_two_packages_only)==Truck.PACKAGE_CAPACITY): #add the packages for truck_two only
+                    nextMinMovement = float(sys.maxsize)
+                    # for truck_two_id in truck_two_packages_only:
+                    t2_index = 0
+                    while(t2_index < len(truck_two_packages_only)):
+                        truck_two_id = truck_two_packages_only[t2_index]
+                        print(str(len(truck_two_packages_only)))
+                        trucks_in_optimal_route[current_truck_index].add_package_id(truck_two_id)
+                        print('T2 id: ' + str(truck_two_id))
+                        remaining_package_ids.remove(truck_two_id)
+                        #truck_two_packages_only.remove(truck_two_id)
+                        
                         if package.get_distance_list_id() >= last_distance_id:
                             nextMinMovement = float(
                                 distance_matrix[package.get_distance_list_id()][last_distance_id+2])
@@ -260,30 +211,112 @@ def calculate_near_optimal_route(trucks_in_optimal_route, distance_matrix, packa
                         else:
                             nextMinMovement = float(
                                 distance_matrix[last_distance_id][package.get_distance_list_id()+2])
-                        
+                    
                         minimum_distance += nextMinMovement
                         add_delivery_time(driver_times, current_driver, nextMinMovement)
-                        packages_table.search(grouped_id).set_delivered_time(
+                        packages_table.search(truck_two_id).set_delivered_time(
                             driver_times[current_driver][0], driver_times[current_driver][1])
-                        last_distance_id = packages_table.search(grouped_id).get_distance_list_id()
-                        packages_on_truck += 1
-                
-                else:
+                        last_distance_id = packages_table.search(truck_two_id).get_distance_list_id()
+                        t2_index += 1
+                        t2_only_added = True
+                        #packages_on_truck += 1
+
+                #print('Truck:' + str(current_truck_index+1), 'Packages:' + str(packages_on_truck))        
+
+                #while packages_on_truck < Truck.PACKAGE_CAPACITY and len(remaining_package_ids) > 0:
+                else: 
+                    nextMinMovement = float(sys.maxsize)
+                    nextMovementId = -1
+                    for package_id in remaining_package_ids: 
+                        #print(package_id)
+                        # print(str(last_distance_id))
+
+                        currentMovement = int()
+                        # print(str(package_id))
+                        package = packages_table.search(package_id)
+
+                        #check to see if this package can only be on truck two,
+                        #if so end this iteration and continue to the next
+                        if 'truck 2' in package.special_notes: continue
+
+                        if ('Delayed on flight' in package.special_notes 
+                            or 'Wrong address listed' in package.special_notes):
+                            if not is_package_deliverable(package.special_notes, driver_times, current_driver):
+                                print('not yet')
+                                continue
+
+
+                        if package.get_distance_list_id() >= last_distance_id:
+                            currentMovement = float(
+                                distance_matrix[package.get_distance_list_id()][last_distance_id+2])
+
+                        else:
+                            # print(str(package.package_id))
+                            # print(package)
+                            currentMovement = float(
+                                distance_matrix[last_distance_id][package.get_distance_list_id()+2])
+                        
+                        #print(str(currentMovement))
+                        if  (currentMovement < nextMinMovement or package.has_deadline()):
+                            #print(str(nextMovementId))
+                            if (nextMovementId != -1 and 
+                                packages_table.search(nextMovementId).has_deadline()): #compare deadlines
+                                if package.package_deadline < packages_table.search(
+                                    nextMovementId).package_deadline:
+                                    nextMinMovement = currentMovement
+                                    nextMovementId = package.get_package_id()
+                            else:
+                                nextMinMovement = currentMovement
+                                nextMovementId = package.get_package_id()    
+                            # and trucks_in_optimal_route[i].get_package_ids_on_board().count(
+                            #     package.get_package_id()) < 1):
+                            #print('true')
                     
-                    trucks_in_optimal_route[current_truck_index].add_package_id(nextMovementId)
-                    remaining_package_ids.remove(nextMovementId)
-                    minimum_distance += nextMinMovement
-                    add_delivery_time(driver_times, current_driver, nextMinMovement)
-                    packages_table.search(nextMovementId).set_delivered_time(
-                        driver_times[current_driver][0], driver_times[current_driver][1])
-                    last_distance_id = packages_table.search(nextMovementId).get_distance_list_id()
-                    packages_on_truck += 1
-                
 
-                # print('\n\n\n' + str(nextMinMovement))
-                # print(str(minimum_distance) + '\n\n\n')
+                    # print(str(nextMovementId))
 
-                # print(remaining_package_ids)
+
+                    #check to see if the current minimum package is part of 
+                    #grouped_package_ids, if so add all the packages to the current truck
+                    #if not then add the package and continue iterating as normal
+                    if nextMovementId in grouped_package_ids: #add all grouped packages
+                        for grouped_id in grouped_package_ids:
+                            trucks_in_optimal_route[current_truck_index].add_package_id(grouped_id)
+                            remaining_package_ids.remove(grouped_id)
+
+                            package = packages_table.search(grouped_id)
+
+                            if package.get_distance_list_id() >= last_distance_id:
+                                nextMinMovement = float(
+                                    distance_matrix[package.get_distance_list_id()][last_distance_id+2])
+
+                            else:
+                                nextMinMovement = float(
+                                    distance_matrix[last_distance_id][package.get_distance_list_id()+2])
+                            
+                            minimum_distance += nextMinMovement
+                            add_delivery_time(driver_times, current_driver, nextMinMovement)
+                            packages_table.search(grouped_id).set_delivered_time(
+                                driver_times[current_driver][0], driver_times[current_driver][1])
+                            last_distance_id = packages_table.search(grouped_id).get_distance_list_id()
+                            #packages_on_truck += 1
+                    
+                    else:
+                        
+                        trucks_in_optimal_route[current_truck_index].add_package_id(nextMovementId)
+                        remaining_package_ids.remove(nextMovementId)
+                        minimum_distance += nextMinMovement
+                        add_delivery_time(driver_times, current_driver, nextMinMovement)
+                        packages_table.search(nextMovementId).set_delivered_time(
+                            driver_times[current_driver][0], driver_times[current_driver][1])
+                        #last_distance_id = packages_table.search(nextMovementId).get_distance_list_id()
+                        #packages_on_truck += 1
+                    
+
+                    # print('\n\n\n' + str(nextMinMovement))
+                    # print(str(minimum_distance) + '\n\n\n')
+
+                    # print(remaining_package_ids)
 
         
             #print('returning home')
