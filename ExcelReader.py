@@ -1,3 +1,5 @@
+""" Joshua Tennies Student ID:#000885921"""
+
 """
 Reads in the data from the excel files associated with the project using the xlrd module
 Excel interaction code adapted from 
@@ -87,8 +89,8 @@ def read_in_distances():
 """
 Excel stores times as fractions of a 24 hour day
 The below method converts the passed in fraction into 
-a tuple consisting of (hours, minutes) and returns 
-the tuple
+a string
+@return the time as string
 """
 def time_as_str(excel_time):
     time = excel_time * 24

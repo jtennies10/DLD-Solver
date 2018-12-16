@@ -1,3 +1,5 @@
+""" Joshua Tennies Student ID:#000885921"""
+
 """
 Defines the Package class,
 which is used to structure the information for 

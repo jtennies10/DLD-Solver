@@ -69,7 +69,8 @@ while True:
 
 
     #call packages_at_time using current hours and minutes
-    RouteCalculator.packages_at_time(packages_table, distance_matrix, hours, minutes)
+    RouteCalculator.packages_at_time(packages_table, distance_matrix, trucks_in_optimal_route, hours, minutes)
+    
 
 
 

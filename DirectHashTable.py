@@ -1,3 +1,5 @@
+""" Joshua Tennies Student ID:#000885921"""
+
 """
 Defines the DirectHashTable, which uses a dictionary to store
 hash buckets. Since in a direct hash table the key is the index,
